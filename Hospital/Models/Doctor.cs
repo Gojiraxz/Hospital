@@ -1,6 +1,5 @@
 namespace Hospital.Models
 {
-    // Entidad: Doctor
     public class Doctor
     {
         public int Id { get; set; }

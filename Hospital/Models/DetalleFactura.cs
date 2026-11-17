@@ -1,7 +1,6 @@
 namespace Hospital.Models
 {
-    // Entidad: Detalle de factura
-    public class DetalleFactura
+422    public class DetalleFactura
     {
         public int Id { get; set; }
         public int Cantidad { get; set; }

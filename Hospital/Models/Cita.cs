@@ -1,3 +1,6 @@
+
+
+
 namespace Hospital.Models
 {
     // Entidad: Cita
