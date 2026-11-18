@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="DTOS\" />
+    <Folder Include="Repository\" />
   </ItemGroup>
 
 </Project>
