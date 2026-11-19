@@ -1,7 +1,23 @@
+using Hospital.Data;
+using Hospital.Models.settings;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+//=======================DBContext=========================
+builder.Services.AddDbContext<AppDBcontext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectoAuth")));
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 
 var app = builder.Build();
 
