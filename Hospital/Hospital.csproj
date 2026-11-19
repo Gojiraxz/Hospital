@@ -21,6 +21,9 @@
 
   <ItemGroup>
     <Folder Include="DTOS\" />
+    <Folder Include="mapping\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Service\" />
     <Folder Include="Repository\" />
   </ItemGroup>
 
