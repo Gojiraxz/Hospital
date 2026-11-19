@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "Turnos";
+    var enfermeros = ViewBag.Enfermeros as IReadOnlyList<Hospital.DTOS.EnfermeroTableDTO> ?? [];
+    var doctores = ViewBag.Doctores as IReadOnlyList<Hospital.DTOS.DoctorTableDTO> ?? [];
+}
+
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+        <span class="page-icon"><i class="fa-solid fa-clock"></i></span>
+        <div>
+            <h1 class="h3 mb-1">Turnos</h1>
+            <p class="text-muted mb-0">Horarios de trabajo del personal</p>
+        </div>
+    </div>
+    @if (User.HasPermission("turno.crear"))
+    {
+        <button type="button" class="btn btn-hospital" id="btnNuevoTurno">
+            <i class="fa-solid fa-plus me-1"></i> Nuevo turno
+        </button>
+    }
+</div>
+
+<div class="card admin-card">
+    <div class="card-body">
+        <table id="turnoTable" class="table table-striped table-hover w-100">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Hora de inicio</th>
+                    <th>Hora final</th>
+                    <th>Enfermero</th>
+                    <th>Doctor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="turnoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="turnoModalTitle">Turno</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="turnoForm" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="turnoId" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="turnoInicio">Hora de inicio</label>
+                            <input type="time" id="turnoInicio" name="turnoInicio" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="turnoFinal">Hora final</label>
+                            <input type="time" id="turnoFinal" name="turnoFinal" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="turnoEnfermeroId">Enfermero</label>
+                            <select id="turnoEnfermeroId" name="turnoEnfermeroId" class="form-select">
+                                <option value="">Seleccione una opcion</option>
+                                @foreach (var item in enfermeros)
+                                {
+                                    <option value="@item.id">@item.display</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="turnoDoctorId">Doctor</label>
+                            <select id="turnoDoctorId" name="turnoDoctorId" class="form-select">
+                                <option value="">Seleccione una opcion</option>
+                                @foreach (var item in doctores)
+                                {
+                                    <option value="@item.id">@item.display</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-hospital" id="btnGuardarTurno">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://unpkg.com/just-validate@4.3.0/dist/just-validate.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        window.turnoConfig = {
+            canUpdate: @User.HasPermission("turno.actualizar").ToString().ToLower(),
+            canDelete: @User.HasPermission("turno.borrar").ToString().ToLower()
+        };
+    </script>
+    <script src="~/js/turno.js" asp-append-version="true"></script>
+}

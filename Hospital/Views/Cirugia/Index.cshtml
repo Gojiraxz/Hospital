@@ -1,0 +1,129 @@
+@{
+    ViewData["Title"] = "Cirugías";
+    var doctores = ViewBag.Doctores as IReadOnlyList<Hospital.DTOS.DoctorTableDTO> ?? [];
+    var habitaciones = ViewBag.Habitaciones as IReadOnlyList<Hospital.DTOS.HabitacionTableDTO> ?? [];
+    var pacientes = ViewBag.Pacientes as IReadOnlyList<Hospital.DTOS.PacienteTableDTO> ?? [];
+}
+
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+        <span class="page-icon"><i class="fa-solid fa-syringe"></i></span>
+        <div>
+            <h1 class="h3 mb-1">Cirugías</h1>
+            <p class="text-muted mb-0">Programación de cirugías</p>
+        </div>
+    </div>
+    @if (User.HasPermission("cirugia.crear"))
+    {
+        <button type="button" class="btn btn-hospital" id="btnNuevoCirugia">
+            <i class="fa-solid fa-plus me-1"></i> Nueva cirugía
+        </button>
+    }
+</div>
+
+<div class="card admin-card">
+    <div class="card-body">
+        <table id="cirugiaTable" class="table table-striped table-hover w-100">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Fecha y hora</th>
+                    <th>Estado</th>
+                    <th>Doctor</th>
+                    <th>Habitación</th>
+                    <th>Paciente</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="cirugiaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cirugiaModalTitle">Cirugía</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="cirugiaForm" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="cirugiaId" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="cirugiaNombre">Nombre</label>
+                            <input type="text" id="cirugiaNombre" name="cirugiaNombre" class="form-control" maxlength="45" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="cirugiaFecha">Fecha y hora</label>
+                            <input type="datetime-local" id="cirugiaFecha" name="cirugiaFecha" class="form-control" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="cirugiaEstado">Estado</label>
+                            <select id="cirugiaEstado" name="cirugiaEstado" class="form-select">
+                            <option value="">Seleccione</option>
+                            <option value="Programada">Programada</option>
+                            <option value="En proceso">En proceso</option>
+                            <option value="Finalizada">Finalizada</option>
+                            <option value="Cancelada">Cancelada</option>
+                        </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="cirugiaDoctorId">Doctor</label>
+                            <select id="cirugiaDoctorId" name="cirugiaDoctorId" class="form-select">
+                                <option value="">Seleccione una opcion</option>
+                                @foreach (var item in doctores)
+                                {
+                                    <option value="@item.id">@item.display</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="cirugiaHabitacionId">Habitación</label>
+                            <select id="cirugiaHabitacionId" name="cirugiaHabitacionId" class="form-select">
+                                <option value="">Seleccione una opcion</option>
+                                @foreach (var item in habitaciones)
+                                {
+                                    <option value="@item.id">@item.display</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="cirugiaPacienteId">Paciente</label>
+                            <select id="cirugiaPacienteId" name="cirugiaPacienteId" class="form-select">
+                                <option value="">Seleccione una opcion</option>
+                                @foreach (var item in pacientes)
+                                {
+                                    <option value="@item.id">@item.display</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-hospital" id="btnGuardarCirugia">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://unpkg.com/just-validate@4.3.0/dist/just-validate.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        window.cirugiaConfig = {
+            canUpdate: @User.HasPermission("cirugia.actualizar").ToString().ToLower(),
+            canDelete: @User.HasPermission("cirugia.borrar").ToString().ToLower()
+        };
+    </script>
+    <script src="~/js/cirugia.js" asp-append-version="true"></script>
+}

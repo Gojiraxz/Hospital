@@ -1,8 +1,207 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<section class="hero d-flex align-items-center justify-content-between flex-wrap gap-3 mb-4">
+    <div>
+        <h1 class="display-6 mb-2">Bienvenido al Hospital Digital</h1>
+        <p class="mb-3">Gestione pacientes, citas, consultas, cirugías, farmacia y facturación desde un solo lugar, con información segura y siempre disponible.</p>
+        <span class="badge rounded-pill text-bg-light px-3 py-2"><i class="fa-solid fa-user-shield me-1"></i> Sesión: @User.Identity?.Name</span>
+    </div>
+    <img src="~/img/logo-icon.svg" alt="Logo Hospital Digital" />
+</section>
+
+<div class="emergency-strip d-flex align-items-center gap-3 mb-2">
+    <i class="fa-solid fa-truck-medical fa-lg"></i>
+    <div><strong>Emergencias 24 horas:</strong> atención inmediata en la sala de urgencias, planta baja.</div>
 </div>
+
+@if (User.HasPermission("paciente.ver") || User.HasPermission("cita.ver") || User.HasPermission("receta.ver") || User.HasPermission("consulta.ver") || User.HasPermission("examen.ver"))
+{
+    <h2 class="h5 group-title"><i class="fa-solid fa-heart-pulse me-2"></i>Atención</h2>
+    <div class="row g-3">
+        @if (User.HasPermission("paciente.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Paciente" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-hospital-user"></i></span>
+                    <h5 class="h6">Pacientes</h5>
+                    <p>Registro de pacientes del hospital</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("cita.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Cita" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-calendar-check"></i></span>
+                    <h5 class="h6">Citas</h5>
+                    <p>Agenda de citas médicas</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("receta.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Receta" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-prescription"></i></span>
+                    <h5 class="h6">Recetas</h5>
+                    <p>Solicitudes de recetas de los pacientes</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("consulta.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="ConsultaMedica" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-notes-medical"></i></span>
+                    <h5 class="h6">Consultas médicas</h5>
+                    <p>Diagnósticos y tratamientos</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("examen.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="ExamenMedico" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-microscope"></i></span>
+                    <h5 class="h6">Exámenes médicos</h5>
+                    <p>Exámenes solicitados y sus resultados</p>
+                </a>
+            </div>
+        }
+    </div>
+}
+@if (User.HasPermission("doctor.ver") || User.HasPermission("enfermero.ver") || User.HasPermission("turno.ver") || User.HasPermission("especialidad.ver"))
+{
+    <h2 class="h5 group-title"><i class="fa-solid fa-user-doctor me-2"></i>Personal</h2>
+    <div class="row g-3">
+        @if (User.HasPermission("doctor.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Doctor" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-user-doctor"></i></span>
+                    <h5 class="h6">Doctores</h5>
+                    <p>Personal médico y su especialidad</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("enfermero.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Enfermero" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-user-nurse"></i></span>
+                    <h5 class="h6">Enfermeros</h5>
+                    <p>Personal de enfermería</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("turno.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Turno" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-clock"></i></span>
+                    <h5 class="h6">Turnos</h5>
+                    <p>Horarios de trabajo del personal</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("especialidad.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Especialidad" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-stethoscope"></i></span>
+                    <h5 class="h6">Especialidades</h5>
+                    <p>Áreas médicas que ofrece el hospital</p>
+                </a>
+            </div>
+        }
+    </div>
+}
+@if (User.HasPermission("habitacion.ver") || User.HasPermission("cirugia.ver") || User.HasPermission("laboratorio.ver"))
+{
+    <h2 class="h5 group-title"><i class="fa-solid fa-hospital me-2"></i>Instalaciones</h2>
+    <div class="row g-3">
+        @if (User.HasPermission("habitacion.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Habitacion" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-bed-pulse"></i></span>
+                    <h5 class="h6">Habitaciones</h5>
+                    <p>Control de habitaciones y su disponibilidad</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("cirugia.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Cirugia" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-syringe"></i></span>
+                    <h5 class="h6">Cirugías</h5>
+                    <p>Programación de cirugías</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("laboratorio.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Laboratorio" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-flask-vial"></i></span>
+                    <h5 class="h6">Laboratorios</h5>
+                    <p>Laboratorios clínicos y de imagenología</p>
+                </a>
+            </div>
+        }
+    </div>
+}
+@if (User.HasPermission("medicamento.ver") || User.HasPermission("proveedor.ver") || User.HasPermission("factura.ver") || User.HasPermission("detallefactura.ver"))
+{
+    <h2 class="h5 group-title"><i class="fa-solid fa-prescription-bottle-medical me-2"></i>Farmacia y facturación</h2>
+    <div class="row g-3">
+        @if (User.HasPermission("medicamento.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Medicamento" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-pills"></i></span>
+                    <h5 class="h6">Medicamentos</h5>
+                    <p>Inventario de farmacia</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("proveedor.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Proveedor" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-truck-medical"></i></span>
+                    <h5 class="h6">Proveedores</h5>
+                    <p>Proveedores de medicamentos e insumos</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("factura.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="Factura" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-file-invoice-dollar"></i></span>
+                    <h5 class="h6">Facturas</h5>
+                    <p>Facturación a pacientes (el total se calcula con el detalle)</p>
+                </a>
+            </div>
+        }
+        @if (User.HasPermission("detallefactura.ver"))
+        {
+            <div class="col-sm-6 col-lg-3">
+                <a class="module-card" asp-controller="DetalleFactura" asp-action="Index">
+                    <span class="icon"><i class="fa-solid fa-receipt"></i></span>
+                    <h5 class="h6">Detalle de facturas</h5>
+                    <p>Medicamentos facturados por cada factura</p>
+                </a>
+            </div>
+        }
+    </div>
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+}

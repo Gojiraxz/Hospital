@@ -1,0 +1,107 @@
+@{
+    ViewData["Title"] = "Detalle de facturas";
+    var facturas = ViewBag.Facturas as IReadOnlyList<Hospital.DTOS.FacturaTableDTO> ?? [];
+    var medicamentos = ViewBag.Medicamentos as IReadOnlyList<Hospital.DTOS.MedicamentoTableDTO> ?? [];
+}
+
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+        <span class="page-icon"><i class="fa-solid fa-receipt"></i></span>
+        <div>
+            <h1 class="h3 mb-1">Detalle de facturas</h1>
+            <p class="text-muted mb-0">Medicamentos facturados por cada factura</p>
+        </div>
+    </div>
+    @if (User.HasPermission("detallefactura.crear"))
+    {
+        <button type="button" class="btn btn-hospital" id="btnNuevoDetalleFactura">
+            <i class="fa-solid fa-plus me-1"></i> Nuevo detalle de factura
+        </button>
+    }
+</div>
+
+<div class="card admin-card">
+    <div class="card-body">
+        <table id="detalleFacturaTable" class="table table-striped table-hover w-100">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cantidad</th>
+                    <th>Precio unitario</th>
+                    <th>Subtotal</th>
+                    <th>Factura</th>
+                    <th>Medicamento</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="detalleFacturaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="detalleFacturaModalTitle">Detalle de factura</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="detalleFacturaForm" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="detalleFacturaId" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="detalleFacturaCantidad">Cantidad</label>
+                            <input type="number" id="detalleFacturaCantidad" name="detalleFacturaCantidad" class="form-control" min="1" max="10000" step="1" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="detalleFacturaPrecioUnitario">Precio unitario</label>
+                            <input type="number" id="detalleFacturaPrecioUnitario" name="detalleFacturaPrecioUnitario" class="form-control" min="0.01" step="0.01" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="detalleFacturaFacturaId">Factura</label>
+                            <select id="detalleFacturaFacturaId" name="detalleFacturaFacturaId" class="form-select">
+                                <option value="">Seleccione una opcion</option>
+                                @foreach (var item in facturas)
+                                {
+                                    <option value="@item.id">@item.display</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="detalleFacturaMedicamentoId">Medicamento</label>
+                            <select id="detalleFacturaMedicamentoId" name="detalleFacturaMedicamentoId" class="form-select">
+                                <option value="">Seleccione una opcion</option>
+                                @foreach (var item in medicamentos)
+                                {
+                                    <option value="@item.id" data-precio="@item.precio.ToString(System.Globalization.CultureInfo.InvariantCulture)">@item.display</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-hospital" id="btnGuardarDetalleFactura">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://unpkg.com/just-validate@4.3.0/dist/just-validate.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        window.detalleFacturaConfig = {
+            canUpdate: @User.HasPermission("detallefactura.actualizar").ToString().ToLower(),
+            canDelete: @User.HasPermission("detallefactura.borrar").ToString().ToLower()
+        };
+    </script>
+    <script src="~/js/detalleFactura.js" asp-append-version="true"></script>
+}
