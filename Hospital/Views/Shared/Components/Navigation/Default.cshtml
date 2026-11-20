@@ -1,0 +1,119 @@
+@model IReadOnlyList<string>
+
+@{
+    bool Has(string p) => Model.Any(x => string.Equals(x, p, StringComparison.OrdinalIgnoreCase));
+    bool HasAny(params string[] perms) => perms.Any(Has);
+}
+
+@if (HasAny("paciente.ver", "cita.ver", "receta.ver", "consulta.ver", "examen.ver"))
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-heart-pulse me-1"></i> Atención
+        </a>
+        <ul class="dropdown-menu">
+            @if (Has("paciente.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Paciente" asp-action="Index"><i class="fa-solid fa-hospital-user me-2"></i>Pacientes</a></li>
+            }
+            @if (Has("cita.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Cita" asp-action="Index"><i class="fa-solid fa-calendar-check me-2"></i>Citas</a></li>
+            }
+            @if (Has("receta.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Receta" asp-action="Index"><i class="fa-solid fa-prescription me-2"></i>Recetas</a></li>
+            }
+            @if (Has("consulta.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="ConsultaMedica" asp-action="Index"><i class="fa-solid fa-notes-medical me-2"></i>Consultas médicas</a></li>
+            }
+            @if (Has("examen.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="ExamenMedico" asp-action="Index"><i class="fa-solid fa-microscope me-2"></i>Exámenes médicos</a></li>
+            }
+        </ul>
+    </li>
+}
+@if (HasAny("doctor.ver", "enfermero.ver", "turno.ver", "especialidad.ver"))
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-user-doctor me-1"></i> Personal
+        </a>
+        <ul class="dropdown-menu">
+            @if (Has("doctor.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Doctor" asp-action="Index"><i class="fa-solid fa-user-doctor me-2"></i>Doctores</a></li>
+            }
+            @if (Has("enfermero.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Enfermero" asp-action="Index"><i class="fa-solid fa-user-nurse me-2"></i>Enfermeros</a></li>
+            }
+            @if (Has("turno.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Turno" asp-action="Index"><i class="fa-solid fa-clock me-2"></i>Turnos</a></li>
+            }
+            @if (Has("especialidad.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Especialidad" asp-action="Index"><i class="fa-solid fa-stethoscope me-2"></i>Especialidades</a></li>
+            }
+        </ul>
+    </li>
+}
+@if (HasAny("habitacion.ver", "cirugia.ver", "laboratorio.ver"))
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-hospital me-1"></i> Instalaciones
+        </a>
+        <ul class="dropdown-menu">
+            @if (Has("habitacion.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Habitacion" asp-action="Index"><i class="fa-solid fa-bed-pulse me-2"></i>Habitaciones</a></li>
+            }
+            @if (Has("cirugia.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Cirugia" asp-action="Index"><i class="fa-solid fa-syringe me-2"></i>Cirugías</a></li>
+            }
+            @if (Has("laboratorio.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Laboratorio" asp-action="Index"><i class="fa-solid fa-flask-vial me-2"></i>Laboratorios</a></li>
+            }
+        </ul>
+    </li>
+}
+@if (HasAny("medicamento.ver", "proveedor.ver", "factura.ver", "detallefactura.ver"))
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fa-solid fa-prescription-bottle-medical me-1"></i> Farmacia
+        </a>
+        <ul class="dropdown-menu">
+            @if (Has("medicamento.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Medicamento" asp-action="Index"><i class="fa-solid fa-pills me-2"></i>Medicamentos</a></li>
+            }
+            @if (Has("proveedor.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Proveedor" asp-action="Index"><i class="fa-solid fa-truck-medical me-2"></i>Proveedores</a></li>
+            }
+            @if (Has("factura.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="Factura" asp-action="Index"><i class="fa-solid fa-file-invoice-dollar me-2"></i>Facturas</a></li>
+            }
+            @if (Has("detallefactura.ver"))
+            {
+                <li><a class="dropdown-item" asp-controller="DetalleFactura" asp-action="Index"><i class="fa-solid fa-receipt me-2"></i>Detalle de facturas</a></li>
+            }
+        </ul>
+    </li>
+}
+@if (HasAny("rol.ver", "permiso.ver", "usuario.ver"))
+{
+    <li class="nav-item">
+        <a class="nav-link" asp-area="" asp-controller="Admin" asp-action="Index">
+            <i class="fa-solid fa-shield-halved me-1"></i> Administración
+        </a>
+    </li>
+}

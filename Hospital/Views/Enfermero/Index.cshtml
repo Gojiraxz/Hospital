@@ -1,0 +1,94 @@
+@{
+    ViewData["Title"] = "Enfermeros";
+    var especialidades = ViewBag.Especialidades as IReadOnlyList<Hospital.DTOS.EspecialidadTableDTO> ?? [];
+}
+
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+        <span class="page-icon"><i class="fa-solid fa-user-nurse"></i></span>
+        <div>
+            <h1 class="h3 mb-1">Enfermeros</h1>
+            <p class="text-muted mb-0">Personal de enfermería</p>
+        </div>
+    </div>
+    @if (User.HasPermission("enfermero.crear"))
+    {
+        <button type="button" class="btn btn-hospital" id="btnNuevoEnfermero">
+            <i class="fa-solid fa-plus me-1"></i> Nuevo enfermero
+        </button>
+    }
+</div>
+
+<div class="card admin-card">
+    <div class="card-body">
+        <table id="enfermeroTable" class="table table-striped table-hover w-100">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Especialidad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="enfermeroModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="enfermeroModalTitle">Enfermero</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="enfermeroForm" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="enfermeroId" />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="enfermeroNombre">Nombre</label>
+                            <input type="text" id="enfermeroNombre" name="enfermeroNombre" class="form-control" maxlength="45" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="enfermeroApellido">Apellido</label>
+                            <input type="text" id="enfermeroApellido" name="enfermeroApellido" class="form-control" maxlength="45" />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label" for="enfermeroEspecialidadId">Especialidad</label>
+                            <select id="enfermeroEspecialidadId" name="enfermeroEspecialidadId" class="form-select">
+                                <option value="">Seleccione una opcion</option>
+                                @foreach (var item in especialidades)
+                                {
+                                    <option value="@item.id">@item.display</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-hospital" id="btnGuardarEnfermero">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://unpkg.com/just-validate@4.3.0/dist/just-validate.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        window.enfermeroConfig = {
+            canUpdate: @User.HasPermission("enfermero.actualizar").ToString().ToLower(),
+            canDelete: @User.HasPermission("enfermero.borrar").ToString().ToLower()
+        };
+    </script>
+    <script src="~/js/enfermero.js" asp-append-version="true"></script>
+}

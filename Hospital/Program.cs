@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services a los contenedores.
 builder.Services.AddControllersWithViews();
 
 
 //=======================DBContext=========================
 builder.Services.AddDbContext<AppDBcontext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("ProyectoAuth")));
+options.UseSqlServer(builder.Configuration.GetConnectionString("HospitalDigital")));
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -21,11 +21,11 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// configura el HTTP requiere tuberia.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // el default HSTS valido is 30 days. tu debe esperar el cambio de este scenarios scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 

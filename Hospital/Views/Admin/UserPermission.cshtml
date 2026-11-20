@@ -1,0 +1,143 @@
+@model Hospital.DTOS.UserPermissionDTO
+@{
+    ViewData["Title"] = $"Permisos de {Model.UserName}";
+    var allPermissions = ViewBag.AllPermission as IReadOnlyList<Hospital.DTOS.PermissionDTO> ?? [];
+    var allRoles = ViewBag.AllRoles as IReadOnlyList<Hospital.Models.Role> ?? [];
+    bool canChangeRole = ViewBag.CanChangeRole is true;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">@Model.UserName</h1>
+        <p class="text-muted mb-0">@Model.Email · Rol actual: <strong>@Model.RoleName</strong></p>
+    </div>
+    <a asp-action="Users" class="btn btn-outline-secondary btn-sm">Volver a Usuarios</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        @if (canChangeRole)
+        {
+            <div class="card admin-card mb-4">
+                <div class="card-header bg-white fw-semibold">Cambiar rol</div>
+                <div class="card-body">
+                    <select id="roleSelect" class="form-select mb-3">
+                        @foreach (var role in allRoles)
+                        {
+                            <option value="@role.Id" selected="@(role.Id == Model.RoleId)">@role.name</option>
+                        }
+                    </select>
+                    <button type="button" id="btnChangeRole" class="btn btn-primary w-100">Guardar rol</button>
+                </div>
+            </div>
+        }
+
+        <div class="card admin-card">
+            <div class="card-header bg-white fw-semibold">Permiso directo</div>
+            <div class="card-body">
+                <select id="permissionSelect" class="form-select mb-3">
+                    @foreach (var permission in allPermissions)
+                    {
+                        <option value="@permission.Id">@permission.Name</option>
+                    }
+                </select>
+                <div class="d-flex gap-2">
+                    <button type="button" id="btnGrant" class="btn btn-success flex-fill">Conceder</button>
+                    <button type="button" id="btnDeny" class="btn btn-danger flex-fill">Denegar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card admin-card mb-4">
+            <div class="card-header bg-white fw-semibold">Permisos efectivos (@Model.EffectivePermission.Count)</div>
+            <div class="card-body">
+                @if (Model.EffectivePermission.Count == 0)
+                {
+                    <span class="text-muted">Sin permisos.</span>
+                }
+                @foreach (var permission in Model.EffectivePermission)
+                {
+                    <span class="badge bg-success me-1 mb-1">@permission</span>
+                }
+            </div>
+        </div>
+
+        <div class="card admin-card">
+            <div class="card-header bg-white fw-semibold">Asignaciones directas (@Model.DirectPermission.Count)</div>
+            @if (Model.DirectPermission.Count == 0)
+            {
+                <div class="card-body text-muted">Este usuario no tiene asignaciones directas.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table mb-0 align-middle">
+                        <thead><tr><th>Permiso</th><th>Estado</th><th class="text-end">Accion</th></tr></thead>
+                        <tbody>
+                            @foreach (var direct in Model.DirectPermission)
+                            {
+                                <tr>
+                                    <td><code>@direct.permissionName</code></td>
+                                    <td>
+                                        @if (direct.IsGranted)
+                                        {
+                                            <span class="badge bg-success">Concedido</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Denegado</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <button type="button" class="btn btn-sm btn-outline-danger btn-remove-direct" data-permission-id="@direct.permissionId">Quitar</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <script>
+        (function () {
+            const userId = @Model.userId;
+
+            const enviar = async (url, params, body) => {
+                try {
+                    const response = await axios.post(url, body ?? null, { params });
+                    if (response.data.success) {
+                        location.reload();
+                    } else {
+                        Swal.fire({ icon: 'error', title: 'Error', text: response.data.message });
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: err.response?.data?.message || 'No se pudo completar la operacion.' });
+                }
+            };
+
+            const asignar = (isgranted) => enviar(
+                '/Admin/AssignPermissionToUser',
+                { userId },
+                { permissionId: parseInt(document.getElementById('permissionSelect').value), isgranted });
+
+            document.getElementById('btnGrant')?.addEventListener('click', () => asignar(true));
+            document.getElementById('btnDeny')?.addEventListener('click', () => asignar(false));
+
+            document.querySelectorAll('.btn-remove-direct').forEach(btn =>
+                btn.addEventListener('click', () => enviar('/Admin/RemoveUserPermission', { userId, permissionId: btn.dataset.permissionId })));
+
+            document.getElementById('btnChangeRole')?.addEventListener('click', () => enviar(
+                '/Admin/UpdateUserRole',
+                { userId },
+                { RoleId: parseInt(document.getElementById('roleSelect').value) }));
+        })();
+    </script>
+}

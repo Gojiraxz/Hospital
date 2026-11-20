@@ -1,0 +1,86 @@
+@{
+    ViewData["Title"] = "Recetas";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center mb-4">
+    <div class="d-flex align-items-center gap-3">
+        <span class="page-icon"><i class="fa-solid fa-prescription"></i></span>
+        <div>
+            <h1 class="h3 mb-1">Solicitudes de recetas</h1>
+            <p class="text-muted mb-0">Recetas que piden los pacientes a los doctores</p>
+        </div>
+    </div>
+</div>
+
+<div class="card admin-card">
+    <div class="card-body">
+        <table id="recetaTable" class="table table-striped table-hover w-100">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Paciente</th>
+                    <th>Cédula</th>
+                    <th>Doctor</th>
+                    <th>Medicamento</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="recetaModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Responder solicitud de receta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="recetaForm" novalidate>
+                <div class="modal-body">
+                    <input type="hidden" id="recetaId" />
+                    <dl class="row mb-3">
+                        <dt class="col-sm-3">Paciente</dt><dd class="col-sm-9" id="recetaPaciente"></dd>
+                        <dt class="col-sm-3">Doctor</dt><dd class="col-sm-9" id="recetaDoctor"></dd>
+                        <dt class="col-sm-3">Medicamento</dt><dd class="col-sm-9" id="recetaMedicamento"></dd>
+                        <dt class="col-sm-3">Indicaciones</dt><dd class="col-sm-9" id="recetaIndicaciones"></dd>
+                    </dl>
+                    <div class="mb-3">
+                        <label class="form-label" for="recetaEstado">Estado</label>
+                        <select id="recetaEstado" class="form-select">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="Aprobada">Aprobada</option>
+                            <option value="Rechazada">Rechazada</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="recetaRespuesta">Respuesta para el paciente (dosis, indicaciones o motivo del rechazo)</label>
+                        <textarea id="recetaRespuesta" class="form-control" rows="3" maxlength="300"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-hospital">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        window.recetaConfig = {
+            canUpdate: @User.HasPermission("receta.actualizar").ToString().ToLower()
+        };
+    </script>
+    <script src="~/js/receta.js" asp-append-version="true"></script>
+}

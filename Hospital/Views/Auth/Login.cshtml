@@ -1,0 +1,160 @@
+@{
+    Layout = null;
+    var needsSetup = (bool?)ViewBag.NeedsSetup ?? false;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Digital - Iniciar sesión</title>
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link href="~/css/login.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="overlay">
+        <div class="popup-container">
+            <div class="brand">
+                <img src="~/img/logo-icon.svg" alt="Logo Hospital Digital" />
+                <div><strong>Hospital Digital</strong><span>CUIDAMOS TU SALUD</span></div>
+            </div>
+            <main>
+                <div class="form-container">
+                    @if (needsSetup)
+                    {
+                        <div id="setupForm" class="form active">
+                            <h1>Crear cuenta de administrador</h1>
+                            <p class="subtitle">Aún no existe ningún administrador. Crea la cuenta del doctor/administrador para comenzar.</p>
+
+                            <form id="setupFormElement">
+                                <div class="input-group">
+                                    <i class="fa-regular fa-user input-icon" aria-hidden="true"></i>
+                                    <input type="text" id="setupUser" placeholder="Nombre de usuario" autocomplete="username" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <i class="fa-regular fa-envelope input-icon" aria-hidden="true"></i>
+                                    <input type="email" id="setupEmail" placeholder="Correo (para recuperar la contraseña)" autocomplete="email" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+                                    <input type="password" id="setupPassword" placeholder="Contraseña (mínimo 8 caracteres)" autocomplete="new-password" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+                                    <input type="password" id="setupConfirm" placeholder="Confirmar contraseña" autocomplete="new-password" required>
+                                </div>
+
+                                <button type="submit" class="signup-btn">Crear cuenta de administrador</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <div id="loginForm" class="form active">
+                            <h1>Bienvenido</h1>
+                            <p class="subtitle">Inicia sesión como administrador / doctor</p>
+
+                            <form id="signupForm">
+                                <div class="input-group">
+                                    <i class="fa-regular fa-user input-icon" aria-hidden="true"></i>
+                                    <input type="text" id="username" placeholder="Nombre de usuario" autocomplete="username" required>
+                                </div>
+
+                                <div class="input-group">
+                                    <i class="fa-solid fa-lock input-icon" aria-hidden="true"></i>
+                                    <input type="password" id="password" placeholder="Contraseña" autocomplete="current-password" required>
+                                </div>
+
+                                <div class="remember-forgot">
+                                    <a href="#" class="forgot-link" data-form="forgotForm">Olvidaste contraseña?</a>
+                                </div>
+
+                                <button type="submit" class="signup-btn">Iniciar sesión</button>
+
+                                <p class="login-link">
+                                    Eres paciente? <a href="#" class="switch-form" data-form="pacienteForm">Entrar con mi cédula</a>
+                                </p>
+                            </form>
+                        </div>
+
+                        <div id="pacienteForm" class="form">
+                            <h1>Acceso de pacientes</h1>
+                            <p class="subtitle">Ingresa el número de cédula con el que te registró el hospital</p>
+
+                            <form id="pacienteFormElement">
+                                <div class="input-group">
+                                    <i class="fa-regular fa-id-card input-icon" aria-hidden="true"></i>
+                                    <input type="text" id="cedula" placeholder="Número de cédula" autocomplete="off" required>
+                                </div>
+
+                                <button type="submit" class="signup-btn">Entrar</button>
+
+                                <p class="login-link">
+                                    Eres personal del hospital? <a href="#" class="switch-form" data-form="loginForm">Inicia sesión aquí</a>
+                                </p>
+                            </form>
+                        </div>
+
+                        <div id="forgotForm" class="form">
+                            <h1>Resetear Contraseña</h1>
+                            <p class="subtitle">Ingresa el correo de tu cuenta</p>
+
+                            <form id="resetPasswordForm">
+                                <div class="input-group">
+                                    <i class="fa-regular fa-envelope input-icon" aria-hidden="true"></i>
+                                    <input type="email" id="resetEmail" placeholder="Tu correo" required>
+                                </div>
+
+                                <button type="submit" class="signup-btn">Mandar link de reseteo</button>
+
+                                <p class="login-link">
+                                    Recuerdas tu contraseña? <a href="#" class="switch-form" data-form="loginForm">Inicia sesión</a>
+                                </p>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </main>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/just-validate@4.2.0/dist/just-validate.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (TempData["Success"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: '@TempData["Success"]',
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+    else if (TempData["Error"] != null)
+    {
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '@TempData["Error"]',
+                toast: true,
+                position: 'top-end',
+                timer: 4000,
+                showConfirmButton: false
+            });
+        </script>
+    }
+    <script src="~/js/login.js"></script>
+</body>
+</html>

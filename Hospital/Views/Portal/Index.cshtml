@@ -1,0 +1,211 @@
+@{
+    Layout = null;
+    var paciente = ViewBag.Paciente as Hospital.DTOS.SavePacienteDTO;
+    var doctores = ViewBag.Doctores as IReadOnlyList<Hospital.DTOS.DoctorTableDTO> ?? [];
+    var citas = ViewBag.Citas as IReadOnlyList<Hospital.DTOS.CitaTableDTO> ?? [];
+    var recetas = ViewBag.Recetas as IReadOnlyList<Hospital.DTOS.RecetaTableDTO> ?? [];
+    string Badge(string estado) => estado switch
+    {
+        "Confirmada" or "Aprobada" or "Atendida" => "text-bg-success",
+        "Cancelada" or "Rechazada" => "text-bg-danger",
+        _ => "text-bg-warning"
+    };
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mi portal - Hospital Digital</title>
+    <link rel="icon" type="image/svg+xml" href="~/favicon.svg" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/portal.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="portal-header">
+        <div class="container d-flex align-items-center justify-content-between flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2">
+                <img src="~/img/logo-icon.svg" alt="Logo Hospital Digital" />
+                <div class="brand-text"><strong>Hospital Digital</strong><small>CUIDAMOS TU SALUD</small></div>
+            </div>
+            <button id="logoutBtn" class="btn btn-light btn-sm"><i class="fa-solid fa-right-from-bracket me-1"></i> Cerrar sesión</button>
+        </div>
+    </header>
+
+    <main class="container py-4">
+        <section class="welcome-card mb-4">
+            <h1 class="h4 mb-1">Hola, @paciente?.nombre @paciente?.apellido</h1>
+            <p class="mb-0 text-muted"><i class="fa-regular fa-id-card me-1"></i> Cédula: @paciente?.cedula</p>
+        </section>
+
+        @if (doctores.Count == 0)
+        {
+            <div class="alert alert-info">Aún no hay doctores disponibles. Consulta con el personal del hospital.</div>
+        }
+
+        <div class="row g-4">
+            <!-- Citas -->
+            <div class="col-lg-6">
+                <div class="card portal-card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0"><i class="fa-solid fa-calendar-check me-2"></i>Mis citas</h2>
+                        <button class="btn btn-hospital btn-sm" id="btnNuevaCita" @(doctores.Count == 0 ? "disabled" : "")>
+                            <i class="fa-solid fa-plus me-1"></i> Pedir cita
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (citas.Count == 0)
+                        {
+                            <p class="text-muted p-3 mb-0">Todavía no tienes citas.</p>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead><tr><th>Fecha</th><th>Doctor</th><th>Motivo</th><th>Estado</th></tr></thead>
+                                    <tbody>
+                                        @foreach (var c in citas)
+                                        {
+                                            <tr>
+                                                <td>@c.fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                                                <td>@c.doctorName</td>
+                                                <td>@c.motivo</td>
+                                                <td><span class="badge @Badge(c.estado)">@c.estado</span></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recetas -->
+            <div class="col-lg-6">
+                <div class="card portal-card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0"><i class="fa-solid fa-prescription me-2"></i>Mis recetas</h2>
+                        <button class="btn btn-hospital btn-sm" id="btnNuevaReceta" @(doctores.Count == 0 ? "disabled" : "")>
+                            <i class="fa-solid fa-plus me-1"></i> Pedir receta
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        @if (recetas.Count == 0)
+                        {
+                            <p class="text-muted p-3 mb-0">Todavía no has pedido recetas.</p>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead><tr><th>Fecha</th><th>Doctor</th><th>Medicamento</th><th>Estado</th></tr></thead>
+                                    <tbody>
+                                        @foreach (var r in recetas)
+                                        {
+                                            <tr>
+                                                <td>@r.fechaSolicitud.ToString("dd/MM/yyyy")</td>
+                                                <td>@r.doctorName</td>
+                                                <td>
+                                                    @r.medicamento
+                                                    @if (!string.IsNullOrWhiteSpace(r.respuesta))
+                                                    {
+                                                        <div class="small text-muted"><i class="fa-solid fa-comment-medical me-1"></i>@r.respuesta</div>
+                                                    }
+                                                </td>
+                                                <td><span class="badge @Badge(r.estado)">@r.estado</span></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: pedir cita -->
+    <div class="modal fade" id="citaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pedir cita</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="citaForm" novalidate>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label" for="citaDoctorId">Doctor</label>
+                            <select id="citaDoctorId" class="form-select">
+                                <option value="">Seleccione un doctor</option>
+                                @foreach (var d in doctores)
+                                {
+                                    <option value="@d.id">@d.display</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="citaFecha">Fecha y hora</label>
+                            <input type="datetime-local" id="citaFecha" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="citaMotivo">Motivo de la consulta</label>
+                            <input type="text" id="citaMotivo" class="form-control" maxlength="250" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-hospital">Solicitar cita</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: pedir receta -->
+    <div class="modal fade" id="recetaModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Pedir receta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="recetaForm" novalidate>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label" for="recetaDoctorId">Doctor</label>
+                            <select id="recetaDoctorId" class="form-select">
+                                <option value="">Seleccione un doctor</option>
+                                @foreach (var d in doctores)
+                                {
+                                    <option value="@d.id">@d.display</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="recetaMedicamento">Medicamento</label>
+                            <input type="text" id="recetaMedicamento" class="form-control" maxlength="150" />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="recetaIndicaciones">Indicaciones / motivo</label>
+                            <textarea id="recetaIndicaciones" class="form-control" rows="3" maxlength="300"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-hospital">Solicitar receta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/portal.js" asp-append-version="true"></script>
+</body>
+</html>
