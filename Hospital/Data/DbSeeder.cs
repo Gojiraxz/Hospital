@@ -1,7 +1,10 @@
+using Hospital.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
-using Hospital.Models;
+using System.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Hospital.Data
 {
@@ -29,13 +32,11 @@ namespace Hospital.Data
         // Agrega columnas nuevas a bases creadas con versiones anteriores
         private static async Task UpgradeSchemaAsync(AppDBcontext context)
         {
-            await context.Database.ExecuteSqlRawAsync(@"
-SI OBJECT_ID('habitaciones') NO ES NULO Y COL_LENGTH('habitaciones', 'PacienteId') ES NULO
-COMENZAR
-    ALTER TABLE habitaciones ADD PacienteId int NULL;
-    ALTER TABLE habitaciones ADD CONSTRAINT FK_habitaciones_pacientes_PacienteId FOREIGN KEY (PacienteId) REFERENCIAS pacientes (Id);
-    CREAR ÍNDICE IX_habitaciones_PacienteId ON habitaciones (PacienteId);
-FIN"");");
+            await context.Database.ExecuteSqlRawAsync(@"IF OBJECT_ID('habitaciones') IS NOT NULL AND COL_LENGTH('habitaciones', 'PacienteId') IS NULL
+             BEGIN  ALTER TABLE habitaciones ADD PacienteId int NULL;
+            ALTER TABLE habitaciones ADD CONSTRAINT FK_habitaciones_pacientes_PacienteId FOREIGN KEY(PacienteId) REFERENCES pacientes(Id);
+            CREATE INDEX IX_habitaciones_PacienteId ON habitaciones(PacienteId);
+            END");
         }
         private static async Task SeedRolesAsync(AppDBcontext context)
         {
