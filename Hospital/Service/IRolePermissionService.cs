@@ -22,6 +22,7 @@ namespace Hospital.Service
         Task<(bool Success, string? ErrorMessage)> DeletePermissionAsync(int id);
         Task<(bool Success, RolwithPermissionDTO? Result, string? ErrorMessage)> CreateRoleAsync(CreateRolDTO dto);
         Task<IReadOnlyList<UserListItemDTO>> GetAllUsersAsync();
+        Task<(bool Success, int? UserId, string? ErrorMessage)> CreateUserAsync(CreateUserDTO dto);
     }
 
 }

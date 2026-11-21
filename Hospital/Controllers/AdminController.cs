@@ -160,7 +160,29 @@ namespace Hospital.Controllers
         public async Task<IActionResult> Users()
         {
             var users = await _rolePermissionService.GetAllUsersAsync();
+            // Datos para el formulario "Nuevo usuario"
+            ViewBag.AllRoles = await _rolePermissionService.GetAllRolesAsync();
+            ViewBag.AllPermission = await _rolePermissionService.GetAllPermissionsAsync();
             return View(users);
+        }
+
+        [Authorize(Policy = "usuario.crear")]
+        [HttpPost]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserDTO dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                var mensaje = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .FirstOrDefault(m => !string.IsNullOrWhiteSpace(m)) ?? "Revise los datos del formulario";
+                return BadRequest(new { success = false, message = mensaje });
+            }
+
+            var (success, userId, errorMessage) = await _rolePermissionService.CreateUserAsync(dto);
+            if (!success)
+                return BadRequest(new { success = false, message = errorMessage });
+            return Ok(new { success = true, userId, message = $"Usuario '{dto.username.Trim()}' creado correctamente" });
         }
 
         [Authorize(Policy = "usuario.asignar")]
