@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Hospital Digital">
+  <defs>
+    <linearGradient id="gShield" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B2A4A"/>
+      <stop offset="0.55" stop-color="#0A6EBD"/>
+      <stop offset="1" stop-color="#12B5A6"/>
+    </linearGradient>
+    <linearGradient id="gCross" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#D7F3EF"/>
+    </linearGradient>
+    <linearGradient id="gHeart" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FF6B6F"/>
+      <stop offset="1" stop-color="#E5484D"/>
+    </linearGradient>
+    <clipPath id="clipShield">
+      <path d="M256 28 L452 100 V248 C452 356 376 438 256 486 C136 438 60 356 60 248 V100 Z"/>
+    </clipPath>
+  </defs>
+
+  <!-- sombra suave -->
+  <ellipse cx="256" cy="496" rx="150" ry="10" fill="#0B2A4A" opacity="0.15"/>
+
+  <!-- escudo exterior -->
+  <path d="M256 28 L452 100 V248 C452 356 376 438 256 486 C136 438 60 356 60 248 V100 Z" fill="url(#gShield)"/>
+  <!-- brillo superior -->
+  <g clip-path="url(#clipShield)">
+    <path d="M60 28 H452 V190 C380 150 300 140 256 150 C190 160 120 200 60 170 Z" fill="#FFFFFF" opacity="0.10"/>
+    <!-- patron de puntos digitales -->
+    <g fill="#FFFFFF" opacity="0.12">
+      <circle cx="110" cy="330" r="4"/><circle cx="140" cy="360" r="4"/><circle cx="172" cy="388" r="4"/>
+      <circle cx="402" cy="330" r="4"/><circle cx="372" cy="360" r="4"/><circle cx="340" cy="388" r="4"/>
+      <circle cx="110" cy="300" r="2.5"/><circle cx="402" cy="300" r="2.5"/>
+    </g>
+  </g>
+  <!-- borde interior doble -->
+  <path d="M256 52 L430 116 V248 C430 345 363 418 256 462 C149 418 82 345 82 248 V116 Z" fill="none" stroke="#FFFFFF" stroke-width="5" opacity="0.9"/>
+  <path d="M256 66 L416 125 V248 C416 336 356 403 256 444 C156 403 96 336 96 248 V125 Z" fill="none" stroke="#9FE3DA" stroke-width="2" opacity="0.8"/>
+
+  <!-- corazon -->
+  <path d="M256 372 C196 326 160 288 160 244 C160 214 183 192 210 192 C230 192 247 203 256 220 C265 203 282 192 302 192 C329 192 352 214 352 244 C352 288 316 326 256 372 Z"
+        fill="url(#gHeart)" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- cruz medica -->
+  <g>
+    <rect x="228" y="118" width="56" height="150" rx="14" fill="url(#gCross)" stroke="#0B2A4A" stroke-width="3" stroke-opacity="0.35"/>
+    <rect x="181" y="165" width="150" height="56" rx="14" fill="url(#gCross)" stroke="#0B2A4A" stroke-width="3" stroke-opacity="0.35"/>
+    <!-- fusion para que la cruz sea una sola pieza -->
+    <rect x="231" y="168" width="50" height="50" fill="url(#gCross)"/>
+  </g>
+
+  <!-- linea ECG -->
+  <path d="M104 262 H190 L212 262 L228 226 L252 316 L274 200 L292 272 L304 262 H408"
+        fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M104 262 H190 L212 262 L228 226 L252 316 L274 200 L292 272 L304 262 H408"
+        fill="none" stroke="#12B5A6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="408" cy="262" r="9" fill="#FFFFFF"/>
+  <circle cx="408" cy="262" r="4.5" fill="#12B5A6"/>
+
+  <!-- alas estilizadas (caduceo) -->
+  <path d="M60 130 C34 124 20 140 14 160 C34 150 52 152 62 164 Z" fill="#FFFFFF" opacity="0.95"/>
+  <path d="M452 130 C478 124 492 140 498 160 C478 150 460 152 450 164 Z" fill="#FFFFFF" opacity="0.95"/>
+  <path d="M62 150 C42 148 30 160 24 176 C42 170 56 172 64 182 Z" fill="#9FE3DA" opacity="0.95"/>
+  <path d="M450 150 C470 148 482 160 488 176 C470 170 456 172 448 182 Z" fill="#9FE3DA" opacity="0.95"/>
+
+  <!-- estrella de vida (simbolo de emergencias) -->
+  <g transform="translate(256 84)" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round">
+    <line x1="0" y1="-14" x2="0" y2="14"/>
+    <line x1="-12" y1="-7" x2="12" y2="7"/>
+    <line x1="-12" y1="7" x2="12" y2="-7"/>
+  </g>
+</svg>

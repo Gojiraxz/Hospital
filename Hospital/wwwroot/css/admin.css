@@ -1,0 +1,209 @@
+.admin-card {
+    border: 1px solid var(--hd-border, #e9ecef);
+    box-shadow: var(--hd-shadow, 0 2px 8px rgba(0, 0, 0, 0.04));
+    border-radius: var(--hd-radius, 0.75rem);
+}
+
+.admin-header h1 {
+    font-weight: 600;
+}
+
+.is-valid {
+    border-color: #198754 !important;
+}
+
+.just-validate-error-label {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ===== Encabezado de cada modulo ===== */
+.page-header {
+    background: #fff;
+    border: 1px solid var(--hd-border);
+    border-left: 6px solid var(--hd-teal);
+    border-radius: var(--hd-radius);
+    padding: 1rem 1.25rem;
+    box-shadow: var(--hd-shadow);
+}
+
+.page-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--hd-blue), var(--hd-teal-dark));
+}
+
+/* ===== Tablas (DataTables) ===== */
+.table > thead {
+    background: #E6F2FB;
+}
+
+.table > thead th {
+    color: var(--hd-navy);
+    font-weight: 600;
+    border-bottom: 2px solid var(--hd-blue);
+    white-space: nowrap;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    --bs-table-bg-type: #F7FBFE;
+}
+
+.table-hover > tbody > tr:hover > * {
+    --bs-table-bg-state: #E6F2FB;
+}
+
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+    border-radius: 8px;
+    border: 1px solid var(--hd-border);
+}
+
+.page-item.active .page-link {
+    background-color: var(--hd-blue);
+    border-color: var(--hd-blue);
+}
+
+.page-link {
+    color: var(--hd-blue);
+}
+
+/* ===== Modales ===== */
+.modal-content {
+    border: 0;
+    border-radius: var(--hd-radius);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: linear-gradient(100deg, var(--hd-navy), var(--hd-blue));
+    color: #fff;
+}
+
+.modal-header .modal-title {
+    color: #fff;
+}
+
+.modal-header .btn-close {
+    filter: invert(1);
+}
+
+/* ===== Estados (badges de color) ===== */
+.badge-estado {
+    display: inline-block;
+    padding: .35em .75em;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 500;
+}
+
+.estado-ok { background: #DDF5F2; color: #0B6B62; }
+.estado-warn { background: #FFF1D6; color: #8A5A00; }
+.estado-info { background: #E1EFFA; color: #0A558F; }
+.estado-bad { background: #FDE3E4; color: #A12A2F; }
+
+/* ===== Pagina de inicio ===== */
+.hero {
+    background: linear-gradient(120deg, var(--hd-navy) 0%, #0F4C81 55%, var(--hd-teal-dark) 100%);
+    color: #fff;
+    border-radius: 20px;
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--hd-shadow);
+}
+
+.hero::after {
+    content: "";
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .08);
+}
+
+.hero h1 {
+    color: #fff;
+    font-weight: 600;
+}
+
+.hero p {
+    color: #DCEEF8;
+    max-width: 560px;
+}
+
+.hero img {
+    width: 150px;
+    height: 150px;
+    filter: drop-shadow(0 8px 14px rgba(0, 0, 0, .3));
+    position: relative;
+    z-index: 1;
+}
+
+.group-title {
+    font-family: 'Poppins', sans-serif;
+    color: var(--hd-navy);
+    font-weight: 600;
+    border-left: 5px solid var(--hd-teal);
+    padding-left: .75rem;
+    margin: 2rem 0 1rem;
+}
+
+.module-card {
+    display: block;
+    height: 100%;
+    background: #fff;
+    border: 1px solid var(--hd-border);
+    border-radius: var(--hd-radius);
+    padding: 1.25rem;
+    text-decoration: none;
+    color: var(--hd-text);
+    box-shadow: var(--hd-shadow);
+    transition: .2s;
+}
+
+.module-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--hd-blue);
+    color: var(--hd-text);
+}
+
+.module-card .icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #E6F2FB;
+    color: var(--hd-blue);
+    font-size: 1.3rem;
+    margin-bottom: .75rem;
+}
+
+.module-card h5 {
+    margin-bottom: .25rem;
+}
+
+.module-card p {
+    color: var(--hd-muted);
+    font-size: .9rem;
+    margin: 0;
+}
+
+.emergency-strip {
+    background: #FDE3E4;
+    border: 1px solid #F6B7BA;
+    color: #7A1F23;
+    border-radius: var(--hd-radius);
+    padding: .9rem 1.25rem;
+}

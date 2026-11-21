@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 200" width="760" height="200" role="img" aria-label="Hospital Digital">
+  <defs>
+    <linearGradient id="gShieldH" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B2A4A"/><stop offset="0.55" stop-color="#0A6EBD"/><stop offset="1" stop-color="#12B5A6"/>
+    </linearGradient>
+    <linearGradient id="gCrossH" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#D7F3EF"/></linearGradient>
+    <linearGradient id="gHeartH" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF6B6F"/><stop offset="1" stop-color="#E5484D"/></linearGradient>
+  </defs>
+  <g transform="translate(8 8) scale(0.36)">
+    <path d="M256 28 L452 100 V248 C452 356 376 438 256 486 C136 438 60 356 60 248 V100 Z" fill="url(#gShieldH)"/>
+    <path d="M256 52 L430 116 V248 C430 345 363 418 256 462 C149 418 82 345 82 248 V116 Z" fill="none" stroke="#FFFFFF" stroke-width="5"/>
+    <path d="M256 372 C196 326 160 288 160 244 C160 214 183 192 210 192 C230 192 247 203 256 220 C265 203 282 192 302 192 C329 192 352 214 352 244 C352 288 316 326 256 372 Z" fill="url(#gHeartH)" stroke="#FFFFFF" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M232 112 H280 a10 10 0 0 1 10 10 V160 H328 a10 10 0 0 1 10 10 V206 a10 10 0 0 1 -10 10 H290 V254 a10 10 0 0 1 -10 10 H232 a10 10 0 0 1 -10 -10 V216 H184 a10 10 0 0 1 -10 -10 V170 a10 10 0 0 1 10 -10 H222 V122 a10 10 0 0 1 10 -10 Z" fill="#FFFFFF"/>
+    <path d="M240 128 H272 V168 H312 V200 H272 V240 H240 V200 H200 V168 H240 Z" fill="#12B5A6" opacity="0.25"/>
+    <path d="M104 262 H190 L212 262 L228 226 L252 316 L274 200 L292 272 L304 262 H408" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M104 262 H190 L212 262 L228 226 L252 316 L274 200 L292 272 L304 262 H408" fill="none" stroke="#12B5A6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="210" y="96" font-family="Poppins, 'Segoe UI', Arial, sans-serif" font-size="58" font-weight="700" fill="#0B2A4A" letter-spacing="1">HOSPITAL</text>
+  <text x="210" y="150" font-family="Poppins, 'Segoe UI', Arial, sans-serif" font-size="58" font-weight="700" fill="#0A6EBD" letter-spacing="1">DIGITAL</text>
+  <rect x="212" y="164" width="150" height="4" rx="2" fill="#12B5A6"/>
+  <text x="212" y="188" font-family="Roboto, Arial, sans-serif" font-size="17" fill="#5B7083" letter-spacing="3">CUIDAMOS TU SALUD</text>
+</svg>
