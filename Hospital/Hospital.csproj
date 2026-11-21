@@ -26,6 +26,8 @@
     <Folder Include="Extensions\" />
     <Folder Include="Service\" />
     <Folder Include="Repository\" />
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
 </Project>
