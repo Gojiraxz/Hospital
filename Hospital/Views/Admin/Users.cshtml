@@ -1,6 +1,7 @@
 @model IReadOnlyList<Hospital.DTOS.UserListItemDTO>
 @{
     ViewData["Title"] = "Usuarios";
+    var allRoles = ViewBag.AllRoles as IReadOnlyList<Hospital.Models.Role> ?? [];
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -8,7 +9,15 @@
         <h1 class="h3 mb-1">Usuarios</h1>
         <p class="text-muted mb-0">Administra el rol y los permisos de cada usuario</p>
     </div>
-    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Volver al panel</a>
+    <div class="d-flex gap-2">
+        @if (User.HasPermission("usuario.crear"))
+        {
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalNuevoUsuario">
+                <i class="fa-solid fa-user-plus me-1"></i>Nuevo usuario
+            </button>
+        }
+        <a asp-action="Index" class="btn btn-outline-secondary btn-sm">Volver al panel</a>
+    </div>
 </div>
 
 <div class="card admin-card">
@@ -42,6 +51,58 @@
     </div>
 </div>
 
+@if (User.HasPermission("usuario.crear"))
+{
+    <div class="modal fade" id="modalNuevoUsuario" tabindex="-1" aria-labelledby="modalNuevoUsuarioLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <form id="formNuevoUsuario" novalidate>
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalNuevoUsuarioLabel">Nuevo usuario</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label" for="nuUsername">Nombre de usuario</label>
+                                <input type="text" id="nuUsername" class="form-control" autocomplete="off" required minlength="3" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="nuEmail">Correo</label>
+                                <input type="email" id="nuEmail" class="form-control" autocomplete="off" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="nuPassword">Contraseña</label>
+                                <input type="password" id="nuPassword" class="form-control" autocomplete="new-password" required minlength="8" />
+                                <div class="form-text">Mínimo 8 caracteres.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label" for="nuConfirm">Confirmar contraseña</label>
+                                <input type="password" id="nuConfirm" class="form-control" autocomplete="new-password" required />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="nuRole">Rol</label>
+                                <select id="nuRole" class="form-select" required>
+                                    <option value="">Selecciona un rol...</option>
+                                    @foreach (var role in allRoles)
+                                    {
+                                        <option value="@role.Id">@role.name (@role.Rolepermissions.Count permisos)</option>
+                                    }
+                                </select>
+                                <div class="form-text">El usuario recibe automáticamente los permisos de este rol. Después puedes ajustarlos con el botón "Configurar".</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" id="btnGuardarUsuario">Crear usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
 @section Scripts {
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -49,4 +110,5 @@
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
     <script src="~/js/UserPermission.js" asp-append-version="true"></script>
+    <script src="~/js/usuarioCrear.js" asp-append-version="true"></script>
 }

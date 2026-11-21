@@ -93,6 +93,44 @@ namespace Hospital.Service
             return await roleRepo.GetAllWithPermissionsAsync();
         }
 
+        // El administrador crea el usuario desde el panel: queda confirmado, con el rol elegido
+        // y, opcionalmente, con permisos directos concedidos.
+        public async Task<(bool Success, int? UserId, string? ErrorMessage)> CreateUserAsync(CreateUserDTO dto)
+        {
+            var username = dto.username.Trim();
+            var email = dto.email.Trim();
+
+            if (await userRepo.GetUsuarioByName(username) != null)
+                return (false, null, "Ese nombre de usuario ya existe");
+            if (await userRepo.GetUsuarioByEmail(email) != null)
+                return (false, null, "Ese correo ya esta registrado");
+
+            var role = await roleRepo.GetByWithPermissionAsync(dto.roleId);
+            if (role == null)
+                return (false, null, "Rol no encontrado");
+
+            var permissionIds = (dto.permissionIds ?? []).Distinct().ToList();
+            foreach (var permissionId in permissionIds)
+            {
+                if (await permissionRepo.GetByIdAsync(permissionId) == null)
+                    return (false, null, "Uno de los permisos seleccionados no existe");
+            }
+
+            var user = await userRepo.CreateAsync(new Usuario
+            {
+                Nombreusuario = username,
+                email = email,
+                password = BCrypt.Net.BCrypt.EnhancedHashPassword(dto.password),
+                emailconfirmed = true,
+                RolId = role.Id
+            });
+
+            foreach (var permissionId in permissionIds)
+                await userRepo.AssingPermissionUsuarioAsync(user.Id, permissionId, true);
+
+            return (true, user.Id, null);
+        }
+
         public async Task<IReadOnlyList<UserListItemDTO>> GetAllUsersAsync()
         {
             var users = await userRepo.GetAllUsuariosAsync();
