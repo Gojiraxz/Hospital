@@ -11,6 +11,7 @@ namespace Hospital.Service
         public void SendPasswordResetEmail(string ToEmail, string body)
         {
             // Sin credenciales SMTP configuradas no se envia correo (evita el error al registrar)
+
             if (string.IsNullOrWhiteSpace(_Smpt.user) || string.IsNullOrWhiteSpace(_Smpt.password))
                 return;
             using var client = new SmtpClient(_Smpt.host, _Smpt.port)

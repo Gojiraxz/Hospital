@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 
 namespace Hospital.Service
 {
-    public class AuthService(IUsuarioRepository userRepo, IRoleRepository roleRepo, ITokenService tokenService,  IEmailService emailService, IMapper mapper, IOptions<smtpSettings> smtpOptions, IPacienteRepository pacienteRepo) : IAuthService
+    public class AuthService(IUsuarioRepository userRepo, IRoleRepository roleRepo, ITokenService tokenService,  IEmailService emailService, IMapper mapper, IOptions<smtpSettings> smtpOptions, IPacienteRepository pacienteRepo, IConfiguration config) : IAuthService
     {
         private readonly IUsuarioRepository _userRepo = userRepo;
         private readonly IRoleRepository _roleRepo = roleRepo;
@@ -17,6 +17,9 @@ namespace Hospital.Service
         private readonly IMapper _mapper = mapper;
         private readonly smtpSettings _smtp = smtpOptions.Value;
         private readonly IPacienteRepository _pacienteRepo = pacienteRepo;
+        private readonly IConfiguration _config = config;
+        // URL base del sitio para los enlaces de los correos. Se puede cambiar con App:BaseUrl en los secretos
+        private string BaseUrl => (_config["App:BaseUrl"] ?? "https://localhost:7058").TrimEnd('/');
         // El paciente entra con cedula y su sesion dura 60 minutos
         private const int PacienteSessionMinutes = 60;
 
@@ -149,7 +152,7 @@ namespace Hospital.Service
             user.emailconfirmed = string.IsNullOrWhiteSpace(_smtp.user) || string.IsNullOrWhiteSpace(_smtp.password);
             await _userRepo.CreateAsync(user);
             await _userRepo.SaveAsync(user);
-            string confirmationlink = $"https://localhost:7011/Auth/ConfirmEmail?email={Uri.EscapeDataString(user.email)}&token={encodedToken}";
+            string confirmationlink = $"{BaseUrl}/Auth/ConfirmEmail?email={Uri.EscapeDataString(user.email)}&token={encodedToken}";
 
             String htmlBody = $"""
            <!doctype html>
@@ -177,7 +180,7 @@ namespace Hospital.Service
             user.emailconfirmationtoken = rawToken;
             await _userRepo.SaveAsync(user);
 
-            string confirmationlink = $"https://localhost:7011/Auth/ConfirmEmail?email={Uri.EscapeDataString(user.email)}&token={encodedToken}";
+            string confirmationlink = $"{BaseUrl}/Auth/ConfirmEmail?email={Uri.EscapeDataString(user.email)}&token={encodedToken}";
 
             String htmlBody = $"""
            <!doctype html>
@@ -231,7 +234,7 @@ namespace Hospital.Service
             user.PasswordResetTokenexpirytime = DateTime.Now.AddHours(1); // Token expira en 1 hora
             await _userRepo.SaveAsync(user);
 
-            string resetLink = $"https://localhost:7011/Auth/ResetPassword?email={Uri.EscapeDataString(user.email)}&token={encodedToken}";
+            string resetLink = $"{BaseUrl}/Auth/ResetPassword?email={Uri.EscapeDataString(user.email)}&token={encodedToken}";
 
             String htmlBody = $"""
            <!doctype html>
